@@ -1,0 +1,7 @@
+[tool.poetry]
+name = "ALEX-chat"
+version = "0.0.0"
+description = "ALEX chat is a python library that allows provides tools for BI chat."
+authors = ["Yassin Kortam"]
+license = "MIT"
+readme = "README.md"
