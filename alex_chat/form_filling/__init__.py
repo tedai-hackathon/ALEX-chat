@@ -15,6 +15,7 @@ class FieldKind(enum.Enum):
     SIGNATURE = "/Sig"
 
 
+FieldValue = typing.Union[bool, str]
 # Serves as an interface to get information from the user about what to put in a field
 # in the PDF form.
 InputInterface = collections.abc.Callable[
@@ -35,7 +36,7 @@ def fill_pdf(
         if fields is None:
             continue
 
-        updates: typing.Dict[str, typing.Union[bool, str]] = {}
+        updates: typing.Dict[str, FieldValue] = {}
         for name, field in fields.items():
             if field.value is not None:
                 print(field, field.value)
@@ -54,7 +55,7 @@ def fill_pdf(
         )
 
 
-def process_form(url: str, path: str, input_getter: InputInterface):
+def process_form(url: str, file: typing.IO, input_getter: InputInterface):
     """Download the PDF form at the given URL, process the PDF and fill out the fields,
     and save the processed pdf to the given file-path.
     """
@@ -63,5 +64,4 @@ def process_form(url: str, path: str, input_getter: InputInterface):
     writer = pypdf.PdfWriter()
 
     fill_pdf(reader, writer, input_getter)
-    with open(path, "wb") as f:
-        writer.write(f)
+    writer.write(file)
