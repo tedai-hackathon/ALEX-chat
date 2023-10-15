@@ -1,3 +1,4 @@
+import pytest
 import os
 import shutil
 from chat.knowledge_base import KnowledgeBase
@@ -15,8 +16,7 @@ class TestKnowledgeBase:
             docs_dir="tests/docs", db_dir="tests/db", urls=urls
         )
         del knowledge_base
-        try:
+
+        with pytest.raises(FileNotFoundError):
             shutil.rmtree("tests/docs")
             shutil.rmtree("tests/db")
-        except FileNotFoundError:
-            pass

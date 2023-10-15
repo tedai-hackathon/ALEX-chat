@@ -177,6 +177,11 @@ class KnowledgeBase:
         """ """
         return self._urls
 
+    @property
+    def retriever(self):
+        """ """
+        return self._vector_store.as_retriever()
+
     @urls.setter
     def urls(self, urls: List[str]):
         """ """
