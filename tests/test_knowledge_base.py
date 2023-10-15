@@ -15,5 +15,8 @@ class TestKnowledgeBase:
             docs_dir="tests/docs", db_dir="tests/db", urls=urls
         )
         del knowledge_base
-        shutil.rmtree("tests/docs")
-        shutil.rmtree("tests/db")
+        try:
+            shutil.rmtree("tests/docs")
+            shutil.rmtree("tests/db")
+        except FileNotFoundError:
+            pass
