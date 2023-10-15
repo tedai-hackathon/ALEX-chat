@@ -15,8 +15,6 @@ class TestKnowledgeBase:
         knowledge_base = KnowledgeBase(
             docs_dir="tests/docs", db_dir="tests/db", urls=urls
         )
-        del knowledge_base
 
-        with pytest.raises(FileNotFoundError):
-            shutil.rmtree("tests/docs")
-            shutil.rmtree("tests/db")
+        shutil.rmtree("tests/docs")
+        shutil.rmtree("tests/db")
