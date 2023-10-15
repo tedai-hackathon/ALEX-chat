@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "ALEX-chat"
+name = "chat"
 version = "0.0.0"
-description = "ALEX chat is a python library that allows provides tools for BI chat."
+description = "Chat is a python library that allows provides tools for legal insights chat."
 authors = ["Yassin Kortam"]
 license = "MIT"
 readme = "README.md"

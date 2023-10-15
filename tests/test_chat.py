@@ -1,6 +1,6 @@
-class TestAlexChat:
+class TestChat:
     """ """
 
-    def test_example(self):
+    def test_chat(self):
         """ """
         assert True
