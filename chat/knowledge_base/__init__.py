@@ -7,6 +7,7 @@ from requests.exceptions import InvalidSchema, ConnectionError
 import re
 import os
 import shutil
+from urllib.parse import urlparse, unquote
 
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -89,7 +90,7 @@ class KnowledgeBase:
             webpage_data = self._get_webpage_data(url)
             if webpage_data is None:
                 continue
-            child_urls = self._get_child_urls(webpage_data)
+            child_urls = self._get_child_urls(webpage_data.text)
             all_urls.extend(self._add_base_path(url, child_urls))
 
         for url in all_urls:
@@ -100,15 +101,15 @@ class KnowledgeBase:
             webpage_data = self._get_webpage_data(url)
             if webpage_data is None:
                 continue
-            self._save_webpage_text(self._docs_dir, webpage_data)
+            self._save_webpage_text(self._docs_dir, webpage_data, url)
 
-    def _get_webpage_data(self, url: str) -> str:
+    def _get_webpage_data(self, url: str) -> requests.Response:
         """ """
         try:
             response = requests.get(url, timeout=5)
         except (InvalidSchema, ConnectionError):
             return None
-        return response.text
+        return response
 
     def _get_child_urls(self, data: str) -> List[str]:
         """ """
@@ -135,9 +136,16 @@ class KnowledgeBase:
 
         return list_links_with_base_path
 
-    def _save_webpage_text(self, folder: str, data: str):
+    def _save_webpage_text(self, folder: str, data, url: str = None):
         """ """
-        soup = BeautifulSoup(data, "html.parser")
+        if url.endswith(".pdf"):
+            parsed_url = urlparse(url)
+            file_name = unquote(os.path.basename(parsed_url.path))
+            with open(f"{folder}/{file_name}", "wb") as f:
+                f.write(data.content)
+            return file_name
+
+        soup = BeautifulSoup(data.text, "html.parser")
         text = soup.get_text()
         text = re.sub(r"\n+", "\n", text)
         text = re.sub(r"\n", "\n\n", text)
@@ -147,7 +155,9 @@ class KnowledgeBase:
             file_name_prefix = soup.title.string
 
         file_name_prefix = re.sub(r"[^a-zA-Z0-9]+", "_", file_name_prefix)
-        file_name = f"{folder}/{file_name_prefix}.txt"
+        file_extension = ".txt"
+
+        file_name = f"{folder}/{file_name_prefix}{file_extension}"
         with open(file_name, "w") as f:
             f.write(text)
         return file_name_prefix
