@@ -73,11 +73,6 @@ class KnowledgeBase:
             documents=texts, embedding=self._embedding, persist_directory=db_dir
         )
 
-    def __del__(self):
-        """ """
-        shutil.rmtree(self._docs_dir)
-        shutil.rmtree(self._db_dir)
-
     def _save_docs(self, urls: List[str]):
         """ """
         all_urls = []
