@@ -33,12 +33,12 @@ class Chat:
         )
 
     def _process_llm_response(self, llm_response):
-        output = []
-        output.append(llm_response["result"])
-        output.append("\n\nSources:")
-        for source in llm_response["source_documents"]:
-            output.append(source.metadata["source"])
-        return "\n".join(output)
+        return {
+            "output": llm_response["result"],
+            "sources": [
+                source.metadata["source"] for source in llm_response["source_documents"]
+            ],
+        }
 
     def chat(self, query: str):
         """ """
